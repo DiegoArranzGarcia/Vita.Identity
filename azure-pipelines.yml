@@ -38,37 +38,61 @@ stages:
     steps:
      
     - task: UseDotNet@2
+      displayName: 'Use .net 6'
       inputs:
         version: '6.0.x'
         packageType: sdk
 
     - task: NuGetToolInstaller@1
+      displayName: 'Install NuGet Tool'
 
     - task: DotNetCoreCLI@2
+      displayName: 'Restore NuGet Packages'  
       inputs:
         command: 'restore'
         projects: $(identityProjects)
         feedsToUse: 'select'
         vstsFeed: 'd4d4328d-23fb-4700-a85b-694186019d4e/5bee72dc-d135-4e9c-84ec-df7c2fe16086'
 
+    - task: SonarCloudPrepare@1
+      displayName: 'Prepare Sonar Cloud Analysis'
+      inputs:
+        SonarCloud: 'SonarCloud (Vita)'
+        organization: 'vita'
+        scannerMode: 'MSBuild'
+        projectKey: 'DiegoArranzGarcia_Vita.Identity'
+        projectName: 'Vita.Identity'
+
     - task: DotNetCoreCLI@2
+      displayName: 'Build'
       inputs:
         command: 'build'
         projects: '$(identityHostProject)'
         arguments: '--configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/build'
     
+    - task: SonarCloudAnalyze@1
+      displayName: 'SonarCloud Analysis'
+
+    - task: SonarCloudPublish@1
+      displayName: 'Publish SonarCloud Analysis'
+      inputs:
+        pollingTimeoutSec: '300'
+
     - task: DotNetCoreCLI@2
+      displayName: 'Run Unit Tests'
       inputs:
         command: 'test'
         projects: '$(identityTestsProjects)'
 
     - task: CopyFiles@2
+      displayName: 'Copy wwwroot Folder'
       inputs:
         SourceFolder: './Vita.Identity.Host/wwwroot'
         Contents: '**'
         TargetFolder: '$(Build.ArtifactStagingDirectory)/build/wwwroot'
 
     - task: ArchiveFiles@2
+      displayName: 'Packing Build'
       inputs:
         rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/build'
         includeRootFolder: false
@@ -77,6 +101,7 @@ stages:
         replaceExistingArchive: true
 
     - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifacts'
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)/artifacts'
         ArtifactName: 'drop'
@@ -89,10 +114,11 @@ stages:
     - group: DevEnvironment
   jobs:
   - job: BuildAspNetCoreApplication
-    displayName: 'Build AspNet Core Application'
+    displayName: 'Deploy Vita.Identity Application'
     steps:
 
     - task: DownloadBuildArtifacts@0
+      displayName: 'Download Artifacts'
       inputs:
         buildType: 'current'
         downloadType: 'single'
@@ -100,6 +126,7 @@ stages:
         downloadPath: $(DownloadArtifacts)
 
     - task: AzureRmWebAppDeployment@4
+      displayName: 'Deploy Artifacts into WebApp'
       inputs:
         ConnectionType: 'AzureRM'
         azureSubscription: 'Vita Dev'
