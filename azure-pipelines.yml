@@ -15,9 +15,9 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  identityProjects: '**/Vita.Identity/**/*.csproj'
-  identityHostProject: '**/Vita.Identity/**/Vita.Identity.Host.csproj'
-  identityTestsProjects: '**/Vita.Identity/**/**.Tests.csproj'
+  identityProjects: '**/*.csproj'
+  identityHostProject: './Vita.Identity.Host/Vita.Identity.Host.csproj'
+  identityTestsProjects: '**/*.Tests.csproj'
   buildConfiguration: 'Release'
   DownloadArtifacts:  $(System.ArtifactsDirectory)
   ConnectionStrings.VitaIdentityDbContext: '$(SqlServerConnectionString)Initial Catalog=dev-identity-vita-db;'
