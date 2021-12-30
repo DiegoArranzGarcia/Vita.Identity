@@ -1,0 +1,57 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <UserSecretsId>407bce65-2da8-4cef-81d8-ab31589d78b7</UserSecretsId>
+    <ApplicationInsightsResourceId>/subscriptions/2e63afd8-4bd4-4441-94a3-db7ff896439a/resourceGroups/develop/providers/microsoft.insights/components/dev-identity-vita-appservice</ApplicationInsightsResourceId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="compilerconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="compilerconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Identity" Version="1.5.0" />
+    <PackageReference Include="Azure.Security.KeyVault.Certificates" Version="4.3.0-beta.2" />
+    <PackageReference Include="Azure.Security.KeyVault.Keys" Version="4.2.0" />
+    <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.2.0" />
+    <PackageReference Include="IdentityServer4" Version="4.1.2" />
+    <PackageReference Include="MediatR" Version="9.0.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.20.0" />
+    
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.1" />
+    
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.1" />
+    
+    <PackageReference Include="Microsoft.Azure.KeyVault.Core" Version="3.0.5" />
+    
+    <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" Version="1.6.2" />
+    
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.5.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    
+    <PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />
+    
+    <PackageReference Include="Vita.Core.Infrastructure.Sql" Version="0.2.13" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Vita.Identity.Application.Commands\Vita.Identity.Application.Commands.csproj" />
+    <ProjectReference Include="..\Vita.Identity.Application.Query\Vita.Identity.Application.Query.csproj" />
+    <ProjectReference Include="..\Vita.Identity.Infrastructure.Sql\Vita.Identity.Infrastructure.Sql.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>
