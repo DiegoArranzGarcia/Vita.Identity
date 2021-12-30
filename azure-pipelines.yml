@@ -16,7 +16,7 @@ pool:
 
 variables:
   identityProjects: '**/*.csproj'
-  identityHostProject: './Vita.Identity.Host/Vita.Identity.Host.csproj'
+  identityHostProject: '**/Vita.Identity.Host.csproj'
   identityTestsProjects: '**/*.Tests.csproj'
   buildConfiguration: 'Release'
   DownloadArtifacts:  $(System.ArtifactsDirectory)
@@ -64,7 +64,7 @@ stages:
 
     - task: CopyFiles@2
       inputs:
-        SourceFolder: './Vita.Identity/Vita.Identity.Host/wwwroot'
+        SourceFolder: './Vita.Identity.Host/wwwroot'
         Contents: '**'
         TargetFolder: '$(Build.ArtifactStagingDirectory)/build/wwwroot'
 
