@@ -62,6 +62,8 @@ stages:
         scannerMode: 'MSBuild'
         projectKey: 'DiegoArranzGarcia_Vita.Identity'
         projectName: 'Vita.Identity'
+        extraProperties: |
+          sonar.exclusions=**/Vita.Goals.Infrastructure.Sql/Migrations/**,**/Vita.Goals.Host/wwwroot/**
 
     - task: DotNetCoreCLI@2
       displayName: 'Build'
