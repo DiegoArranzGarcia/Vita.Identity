@@ -12,9 +12,9 @@ namespace Vita.Identity.Host.Claims
 {
     public class ProfileService : IProfileService
     {
-        private readonly IUsersQueryStore _usersQueryStore;
+        private readonly IUserQueryStore _usersQueryStore;
 
-        public ProfileService(IUsersQueryStore usersQueryStore)
+        public ProfileService(IUserQueryStore usersQueryStore)
         {
             _usersQueryStore = usersQueryStore;
         }

@@ -7,10 +7,10 @@ namespace Vita.Identity.Domain.Services.Authentication
 {
     public class AuthenticationService : IAuthenticationService
     {
-        private readonly IUsersRepository _usersRepository;
+        private readonly IUserRepository _usersRepository;
         private readonly IPasswordService _passwordService;
 
-        public AuthenticationService(IUsersRepository usersRepository, IPasswordService passwordService)
+        public AuthenticationService(IUserRepository usersRepository, IPasswordService passwordService)
         {
             _usersRepository = usersRepository;
             _passwordService = passwordService;

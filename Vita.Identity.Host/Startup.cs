@@ -1,32 +1,39 @@
 ﻿using Azure;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
+using IdentityServer4;
 using IdentityServer4.Models;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
 using Vita.Identity.Application.Commands.Users;
 using Vita.Identity.Application.Query.Users;
 using Vita.Identity.Domain.Aggregates.Users;
 using Vita.Identity.Domain.Services.Authentication;
 using Vita.Identity.Domain.Services.Passwords;
 using Vita.Identity.Host.Claims;
+using Vita.Identity.Host.Config;
 using Vita.Identity.Infrastructure.Sql;
 using Vita.Identity.Infrastructure.Sql.Aggregates.Users;
 using Vita.Identity.Infrastructure.Sql.Configuration;
 using Vita.Identity.Infrastructure.Sql.QueryStore;
 
+
 namespace Vita.Identity.Host
 {
     public class Startup
     {
-        private const string ApiCorsPolicy = "api";
+        public const string ApiCorsPolicy = "api";
+        public const string IdentityApiScopePolicy = "identity-api-scope";
 
         public IConfiguration Configuration { get; }
 
@@ -50,11 +57,41 @@ namespace Vita.Identity.Host
                 options.Events.RaiseFailureEvents = true;
                 options.Events.RaiseInformationEvents = true;
                 options.Events.RaiseSuccessEvents = true;
-            }).AddInMemoryApiScopes(Config.GetApiScopes())
-              .AddInMemoryIdentityResources(Config.GetIdentityResources())
-              .AddInMemoryClients(clients)
+            }).AddInMemoryApiScopes(ApiScopeConfiguration.GetApiScopes())
+              .AddInMemoryIdentityResources(IdentityServerConfiguration.GetIdentityResources())
+              .AddInMemoryClients(IdentityServerConfiguration.GetClients())
               .AddProfileService<ProfileService>()
               .AddSigningCredential(GenerateCertFromAsym());
+
+            services.AddAuthentication()
+                    .AddGoogle(googleOptions =>
+                    {
+                        googleOptions.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                        googleOptions.SaveTokens = true;
+
+                        googleOptions.Scope.Add("https://www.googleapis.com/auth/calendar");
+
+                        googleOptions.ClientId = "940218869401-lh962ihjbomsidaufm8ntamlpgbkhv6j.apps.googleusercontent.com";
+                        googleOptions.ClientSecret = "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";
+                    })
+                    .AddJwtBearer("Bearer", options =>
+                    {
+                        options.Authority = "https://localhost:44360";
+                        options.RequireHttpsMetadata = false;
+
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateAudience = false
+                        };
+                    });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(IdentityApiScopePolicy, policy =>
+                {
+                    policy.RequireClaim("scope", ApiScopeConfiguration.IdentityApiScope);
+                });
+            });
 
             var allowedOrigins = clients.SelectMany(x => x.RedirectUris).Select(uri => ExtractUri(uri)).ToList();
 
@@ -68,11 +105,9 @@ namespace Vita.Identity.Host
 
             AddApplicationBootstrapping(services);
             AddPersistanceBootstrapping(services);
-
-            services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
         }
 
-        private string ExtractUri(string uriString)
+        private static string ExtractUri(string uriString)
         {
             var uri = new Uri(uriString);
             return $"{uri.Scheme}://{uri.Authority}";
@@ -96,10 +131,10 @@ namespace Vita.Identity.Host
 
         private void AddPersistanceBootstrapping(IServiceCollection services)
         {
-            services.AddScoped<IUsersRepository, UsersRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IPasswordService, PasswordService>();
-            services.AddScoped<IUsersQueryStore, UserQueryStore>();
+            services.AddScoped<IUserQueryStore, UserQueryStore>();
             services.AddDbContext<IdentityDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("VitaIdentityDbContext")));
         }
 
@@ -116,7 +151,7 @@ namespace Vita.Identity.Host
             app.UseIdentityServer();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
+            app.UseEndpoints(endpoints => 
             {
                 endpoints.MapDefaultControllerRoute();
             });

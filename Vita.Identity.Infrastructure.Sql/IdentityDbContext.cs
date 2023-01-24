@@ -11,21 +11,17 @@ namespace Vita.Identity.Infrastructure.Sql
         private readonly IMediator _mediator;
 
         public DbSet<User> Users { get; private set; }
+        public DbSet<LoginProvider> LoginProviders { get; private set; }
 
         public IdentityDbContext(DbContextOptions options, IMediator mediator) : base(options, mediator)
         {
             _mediator = mediator;
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseLazyLoadingProxies();
-            base.OnConfiguring(optionsBuilder);
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new UserEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new LoginProviderEntityConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }

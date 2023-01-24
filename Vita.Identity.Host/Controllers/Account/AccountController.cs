@@ -4,6 +4,7 @@ using IdentityServer4.Events;
 using IdentityServer4.Extensions;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
+using IdentityServerHost.Quickstart.UI;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -11,9 +12,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Vita.Identity.Application.Commands.Users;
 using Vita.Identity.Application.Query.Users;
+using Vita.Identity.Domain.Aggregates.Users;
 using Vita.Identity.Domain.ValueObjects;
 using Vita.Identity.Host.Shared;
 
@@ -29,7 +32,7 @@ namespace Vita.Identity.Host.Controllers.Account
         private readonly IEventService _events;
         private readonly IMediator _mediator;
         private readonly IConfiguration _configuration;
-        private readonly IUsersQueryStore _userQueryStore;
+        private readonly IUserRepository _userRepository;
         private readonly Domain.Services.Authentication.IAuthenticationService _authenticationService;
 
         public AccountController(IIdentityServerInteractionService interaction,
@@ -37,7 +40,7 @@ namespace Vita.Identity.Host.Controllers.Account
                                  IAuthenticationSchemeProvider schemeProvider,
                                  IEventService events,
                                  IMediator mediator,
-                                 IUsersQueryStore usersQueryStore,
+                                 IUserRepository userRepository,
                                  Domain.Services.Authentication.IAuthenticationService authenticationService,
                                  IConfiguration configuration)
         {
@@ -47,13 +50,14 @@ namespace Vita.Identity.Host.Controllers.Account
             _events = events;
             _mediator = mediator;
             _configuration = configuration;
-            _userQueryStore = usersQueryStore;
+            _userRepository = userRepository;
             _authenticationService = authenticationService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Login(string returnUrl)
         {
+            //string accessToken = await HttpContext.GetTokenAsync("access_token");
             // build a model so we know what to show on the login page
             var vm = await BuildLoginViewModelAsync(returnUrl);
             return View(vm);
@@ -67,11 +71,11 @@ namespace Vita.Identity.Host.Controllers.Account
 
             if (ModelState.IsValid)
             {
-                var email = new Email(model.Email);
+                Email email = new(model.Email);
 
                 if (await _authenticationService.AuthenticateUser(email, model.Password))
                 {
-                    UserDto user = await _userQueryStore.GetUserByEmail(model.Email);
+                    User user = await _userRepository.FindByEmailAsync(email);
 
                     await _events.RaiseAsync(new UserLoginSuccessEvent(username: user.UserName, subjectId: user.Id.ToString(), name: user.GivenName, clientId: context?.Client?.ClientId));
 
@@ -182,6 +186,16 @@ namespace Vita.Identity.Host.Controllers.Account
                 return vm;
             }
 
+            var schemes = await _schemeProvider.GetAllSchemesAsync();
+
+            var providers = schemes
+                .Where(x => x.DisplayName != null)
+                .Select(x => new ExternalProvider
+                {
+                    DisplayName = x.DisplayName ?? x.Name,
+                    AuthenticationScheme = x.Name
+                }).ToList();
+
             var allowLocal = true;
             if (context?.Client?.ClientId != null)
             {
@@ -195,7 +209,8 @@ namespace Vita.Identity.Host.Controllers.Account
                 AllowRememberLogin = AccountOptions.AllowRememberLogin,
                 EnableLocalLogin = allowLocal,
                 ReturnUrl = returnUrl,
-                Email = context?.LoginHint
+                Email = context?.LoginHint,
+                ExternalProviders = providers.ToArray(),
             };
         }
 

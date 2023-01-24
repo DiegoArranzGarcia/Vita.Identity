@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Vita.Identity.Infrastructure.Sql;
 
@@ -11,9 +12,10 @@ using Vita.Identity.Infrastructure.Sql;
 namespace Vita.Identity.Persistance.Sql.Migrations
 {
     [DbContext(typeof(IdentityDbContext))]
-    partial class VitaIdentityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230123151013_LoginProvider")]
+    partial class LoginProvider
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

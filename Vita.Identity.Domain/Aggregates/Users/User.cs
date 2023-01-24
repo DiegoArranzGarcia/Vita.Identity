@@ -1,5 +1,7 @@
 ﻿using Dawn;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using Vita.Core.Domain.Repositories;
 using Vita.Identity.Domain.ValueObjects;
 
@@ -14,18 +16,51 @@ namespace Vita.Identity.Domain.Aggregates.Users
         public string FullName => $"{GivenName} {FamilyName}".Trim();
         public string UserName => $"{GivenName.ToLower()}.{FamilyName.ToLower()}".Trim();
 
-        protected User()
-        {
+        private List<LoginProvider> _loginProviders;
+        public IReadOnlyCollection<LoginProvider> LoginProviders => _loginProviders.AsReadOnly();
 
+        public static User CreateUserWithPassword(Email email, string givenName, string familyName, string passwordHash)
+        {
+            return new User(email, givenName, familyName, passwordHash);
         }
 
-        public User(Email email, string givenName, string familyName, string passwordHash) : this()
+        public static User CreateUserWithLoginProvider(Email email, string givenName, string familyName, LoginProvider loginProvider = null)
+        {
+            return new User(email, givenName, familyName, loginProvider: loginProvider);
+        }
+
+        protected User()
+        {
+            _loginProviders = new();
+        }
+
+        protected User(Email email, string givenName, string familyName, string passwordHash = null, LoginProvider loginProvider = null) : this()
         {
             Id = Guid.NewGuid();
             Email = email;
-            PasswordHash = Guard.Argument(passwordHash, nameof(passwordHash)).NotNull().NotEmpty();
             GivenName = Guard.Argument(givenName, nameof(givenName)).NotNull().NotEmpty();
             FamilyName = Guard.Argument(familyName, nameof(familyName)).NotNull().NotEmpty();
+
+            Guard.NotAllNull(Guard.Argument(passwordHash), Guard.Argument(loginProvider));
+
+            PasswordHash = passwordHash;
+
+            if (loginProvider != null) _loginProviders.Add(loginProvider);
+        }
+
+        public void AssociateExternalLoginProvider(LoginProvider externalLoginProvider)
+        {
+            Guard.Argument(externalLoginProvider).NotNull();
+
+            _loginProviders.Add(externalLoginProvider);
+        }
+
+        public void UpdateLoginProviders(IReadOnlyCollection<LoginProvider> loginProvider)
+        {
+            Guard.Argument(loginProvider).NotNull().NotEmpty();
+
+            _loginProviders.Clear();
+            _loginProviders.AddRange(loginProvider);
         }
     }
 }

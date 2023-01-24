@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR" Version="9.0.0" />
-    <PackageReference Include="Vita.Core.Infrastructure.AzureServiceBus" Version="0.2.13" />
+    <PackageReference Include="MediatR" Version="11.1.0" />
+    <PackageReference Include="Vita.Core.Infrastructure.AzureServiceBus" Version="0.2.14" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
 using Vita.Core.Infrastructure.Sql;
 using Vita.Identity.Domain.Aggregates.Users;
 using Vita.Identity.Domain.ValueObjects;
@@ -17,8 +18,8 @@ namespace Vita.Identity.Infrastructure.Sql.Aggregates.Users
             builder.HasKey(u => u.Id);
 
             builder.Property(u => u.Id)
-                   .IsRequired()
-                   .ValueGeneratedOnAdd();
+                   .ValueGeneratedNever()
+                   .IsRequired();
 
             builder.Property(u => u.Email)
                    .IsRequired()
@@ -32,6 +33,14 @@ namespace Vita.Identity.Infrastructure.Sql.Aggregates.Users
 
             builder.HasIndex(u => u.Email)
                    .IsUnique();
+
+            builder.HasMany(u => u.LoginProviders)
+                   .WithOne()
+                   .HasForeignKey("UserId")
+                   .OnDelete(DeleteBehavior.Cascade);
+
+            var navigation = builder.Metadata.FindNavigation(nameof(User.LoginProviders));
+            navigation.SetPropertyAccessMode(PropertyAccessMode.Field);
         }
     }
 }

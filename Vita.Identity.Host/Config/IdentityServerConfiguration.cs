@@ -2,9 +2,9 @@
 using IdentityServer4.Models;
 using System.Collections.Generic;
 
-namespace Vita.Identity.Host
+namespace Vita.Identity.Host.Config
 {
-    public static class Config
+    public static class IdentityServerConfiguration
     {
         public static IEnumerable<IdentityResource> GetIdentityResources()
         {
@@ -12,14 +12,6 @@ namespace Vita.Identity.Host
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
-            };
-        }
-
-        public static IEnumerable<ApiScope> GetApiScopes()
-        {
-            return new List<ApiScope>
-            {
-                new ApiScope(name: "goals", displayName: "Full Access to Goals API")
             };
         }
 
@@ -43,11 +35,23 @@ namespace Vita.Identity.Host
                     AllowedScopes = {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
-                        "goals"
+                        ApiScopeConfiguration.GoalApiScope
                     },
 
                     AllowOfflineAccess = true,
-                    RefreshTokenUsage = TokenUsage.ReUse,
+                    RefreshTokenUsage = TokenUsage.ReUse,                   
+                },
+                new Client
+                {
+                    ClientId= "identity-api-client",
+                    ClientName = "Vita Backend Services",
+
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    AllowedScopes = {
+                        ApiScopeConfiguration.IdentityApiScope
+                    },
+
+                    ClientSecrets = { new Secret("identity-secret".Sha256()) },
                 }
             };
         }

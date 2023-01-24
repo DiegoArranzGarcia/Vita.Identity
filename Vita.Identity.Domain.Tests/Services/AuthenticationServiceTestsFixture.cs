@@ -14,10 +14,10 @@ namespace Vita.Identity.Domain.Tests.Services
 
         public static Email GenerateEmail() => _fixture.Create<Email>();
 
-        public static AuthenticationService CreateSut(IUsersRepository? userRepository = null,
+        public static AuthenticationService CreateSut(IUserRepository? userRepository = null,
                                                       IPasswordService? passwordService = null)
         {
-            return new AuthenticationService(userRepository ?? Substitute.For<IUsersRepository>(),
+            return new AuthenticationService(userRepository ?? Substitute.For<IUserRepository>(),
                                              passwordService ?? Substitute.For<IPasswordService>());
         }
 
@@ -36,9 +36,9 @@ namespace Vita.Identity.Domain.Tests.Services
                            .Create();
         }
 
-        private static IUsersRepository CreateUserRepositoryWithUser(User user)
+        private static IUserRepository CreateUserRepositoryWithUser(User user)
         {
-            var userRepository = Substitute.For<IUsersRepository>();
+            var userRepository = Substitute.For<IUserRepository>();
 
             userRepository.FindByEmailAsync(Arg.Is(user.Email))
                           .Returns(user);

@@ -9,10 +9,10 @@ namespace Vita.Identity.Domain.Tests.Aggregates.Users
         [Fact]
         public void GivenValidArguments_WhenCreatingUser_ShouldCreateUser()
         {
-            var user = new User(UserTestsFixture.GoodEmail,
-                                UserTestsFixture.GivenName,
-                                UserTestsFixture.FamilyName,
-                                UserTestsFixture.PasswordHash);
+            var user = User.CreateUserWithPassword(UserTestsFixture.GoodEmail,
+                                                   UserTestsFixture.GivenName,
+                                                   UserTestsFixture.FamilyName,
+                                                   UserTestsFixture.PasswordHash);
 
             Assert.NotNull(user);
             Assert.Equal(expected: UserTestsFixture.GoodEmail, actual: user.Email);
@@ -24,10 +24,10 @@ namespace Vita.Identity.Domain.Tests.Aggregates.Users
         [Fact]
         public void WhenGettingFullName_ShouldReturnTheFullName()
         {
-            var user = new User(UserTestsFixture.GoodEmail,
-                                UserTestsFixture.GivenName,
-                                UserTestsFixture.FamilyName,
-                                UserTestsFixture.PasswordHash);
+            var user = User.CreateUserWithPassword(UserTestsFixture.GoodEmail,
+                                                   UserTestsFixture.GivenName,
+                                                   UserTestsFixture.FamilyName,
+                                                   UserTestsFixture.PasswordHash);
 
             Assert.Equal(expected: $"{UserTestsFixture.GivenName} {UserTestsFixture.FamilyName}".Trim(),
                            actual: user.FullName);
@@ -36,10 +36,10 @@ namespace Vita.Identity.Domain.Tests.Aggregates.Users
         [Fact]
         public void WhenGettingUserName_ShouldReturnTheUserName()
         {
-            var user = new User(UserTestsFixture.GoodEmail,
-                                UserTestsFixture.GivenName,
-                                UserTestsFixture.FamilyName,
-                                UserTestsFixture.PasswordHash);
+            var user = User.CreateUserWithPassword(UserTestsFixture.GoodEmail,
+                                                   UserTestsFixture.GivenName,
+                                                   UserTestsFixture.FamilyName,
+                                                   UserTestsFixture.PasswordHash);
 
             Assert.Equal(expected: $"{UserTestsFixture.GivenName.ToLower()}.{UserTestsFixture.FamilyName.ToLower()}".Trim(),
                            actual: user.UserName);
@@ -50,10 +50,10 @@ namespace Vita.Identity.Domain.Tests.Aggregates.Users
         [InlineData("")]
         public void GivenBadGivenName_WhenCreatingUser_ShouldThrowException(string badGivenName)
         {
-            Assert.ThrowsAny<ArgumentException>(() => new User(UserTestsFixture.GoodEmail,
-                                                               badGivenName,
-                                                               UserTestsFixture.FamilyName,
-                                                               UserTestsFixture.PasswordHash));
+            Assert.ThrowsAny<ArgumentException>(() => User.CreateUserWithPassword(UserTestsFixture.GoodEmail,
+                                                                                  badGivenName,
+                                                                                  UserTestsFixture.FamilyName,
+                                                                                  UserTestsFixture.PasswordHash));
         }
 
         [Theory]
@@ -61,10 +61,10 @@ namespace Vita.Identity.Domain.Tests.Aggregates.Users
         [InlineData("")]
         public void GivenBadFamilyName_WhenCreatingUser_ShouldThrowException(string badFamilyName)
         {
-            Assert.ThrowsAny<ArgumentException>(() => new User(UserTestsFixture.GoodEmail,
-                                                               UserTestsFixture.GivenName,
-                                                               badFamilyName,
-                                                               UserTestsFixture.PasswordHash));
+            Assert.ThrowsAny<ArgumentException>(() => User.CreateUserWithPassword(UserTestsFixture.GoodEmail,
+                                                                                  UserTestsFixture.GivenName,
+                                                                                  badFamilyName,
+                                                                                  UserTestsFixture.PasswordHash));
         }
 
         [Theory]
@@ -72,10 +72,10 @@ namespace Vita.Identity.Domain.Tests.Aggregates.Users
         [InlineData("")]
         public void GivenBadPasswordHash_WhenCreatingUser_ShouldThrowException(string badPasswordHash)
         {
-            Assert.ThrowsAny<ArgumentException>(() => new User(UserTestsFixture.GoodEmail,
-                                                               UserTestsFixture.GivenName,
-                                                               UserTestsFixture.FamilyName,
-                                                               badPasswordHash));
+            Assert.ThrowsAny<ArgumentException>(() => User.CreateUserWithPassword(UserTestsFixture.GoodEmail,
+                                                                                  UserTestsFixture.GivenName,
+                                                                                  UserTestsFixture.FamilyName,
+                                                                                  badPasswordHash));
         }
     }
 }
