@@ -46,13 +46,14 @@
                     <div class="form-group external-providers">
                             @foreach (var provider in Model.VisibleExternalProviders)
                             {
-                                <button class="btn btn-secondary"
-                                   asp-controller="ExternalLogin"
-                                   asp-action="Challenge"
-                                   asp-route-scheme="@provider.AuthenticationScheme"
-                            asp-route-returnUrl="@Model.ReturnUrl">
-                                <b>Sign in with @provider.DisplayName</b>
-                            </button>
+                                <div class="external-provider-button">
+                                     <a asp-controller="ExternalLogin"
+                                            asp-action="Challenge"
+                                            asp-route-scheme="@provider.AuthenticationScheme"
+                                            asp-route-returnUrl="@Model.ReturnUrl">
+                                        <b>Sign in with @provider.DisplayName</b>
+                                    </a>
+                                </div>                               
                             }
                     </div>
                 }

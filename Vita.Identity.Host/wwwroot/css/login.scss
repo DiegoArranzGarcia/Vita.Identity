@@ -85,6 +85,7 @@ button {
     color: $font-primary;
     border: none;
     text-transform: uppercase;
+    cursor: pointer;
 
     &:focus {
         outline: none;
@@ -193,14 +194,22 @@ div.login-page {
     }
 }
 
-div.external-providers {
+div.external-provider-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    button.btn btn-secondary {
-        height: 3em;
-        width: 100%;
-        max-width: 16em;
-        border-radius: 2em;
-        background-color: $bg-primary-transparency;
-        color: $font-primary;
+    height: 3em;
+    width: 100%;
+    max-width: 16em;
+    border-radius: 2em;
+    background-color: $bg-primary-transparency;
+    color: $font-primary;
+    border: none;
+    text-transform: uppercase;
+
+    a {
+        text-decoration: inherit;
+        color: inherit;
     }
 }
