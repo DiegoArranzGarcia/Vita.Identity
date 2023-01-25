@@ -11,6 +11,6 @@ namespace Vita.Identity.Domain.Aggregates.Users
         Task<User> FindByEmailAsync(Email email);
         Task<User> FindByLoginProvider(string provider, string userId);
         Task<User> Add(User user);
-        Task<User> Update(User user);
+        Task Update(User user);
     }
 }

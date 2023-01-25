@@ -1,11 +1,9 @@
-﻿using Azure;
-using Azure.Identity;
+﻿using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using IdentityServer4;
 using IdentityServer4.Models;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,7 +12,6 @@ using Serilog;
 using System;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
 using Vita.Identity.Application.Commands.Users;
 using Vita.Identity.Application.Query.Users;
 using Vita.Identity.Domain.Aggregates.Users;
@@ -71,12 +68,13 @@ namespace Vita.Identity.Host
 
                         googleOptions.Scope.Add("https://www.googleapis.com/auth/calendar");
 
-                        googleOptions.ClientId = "940218869401-lh962ihjbomsidaufm8ntamlpgbkhv6j.apps.googleusercontent.com";
-                        googleOptions.ClientSecret = "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";
+                        googleOptions.ClientId = Configuration["GoogleClientId"];
+                        googleOptions.ClientSecret = Configuration["GoogleClientSecret"];
                     })
                     .AddJwtBearer("Bearer", options =>
                     {
                         options.Authority = "https://localhost:44360";
+
                         options.RequireHttpsMetadata = false;
 
                         options.TokenValidationParameters = new TokenValidationParameters
@@ -109,20 +107,22 @@ namespace Vita.Identity.Host
 
         private static string ExtractUri(string uriString)
         {
-            var uri = new Uri(uriString);
+            Uri uri = new(uriString);
             return $"{uri.Scheme}://{uri.Authority}";
         }
 
-        private X509Certificate2 GenerateCertFromAsym()
+        private static X509Certificate2 GenerateCertFromAsym()
         {
-            var secretClient = new SecretClient(new Uri(Configuration["KeyVault:BaseUrl"]), new DefaultAzureCredential());
-            Response<KeyVaultSecret> secret = secretClient.GetSecret("SignInCredentialsCert");
+            Uri keyVaultUri = new(Environment.GetEnvironmentVariable("VitaKeyVaultUri"));
+            SecretClient secretClient = new(keyVaultUri, new DefaultAzureCredential());
 
-            return new X509Certificate2(Convert.FromBase64String(secret.Value.Value), (string)null, X509KeyStorageFlags.MachineKeySet |
-                                                                                                    X509KeyStorageFlags.PersistKeySet |
-                                                                                                    X509KeyStorageFlags.Exportable);
+            KeyVaultSecret secret = secretClient.GetSecret("SignInCredentialsCert").Value;
+
+            return new X509Certificate2(Convert.FromBase64String(secret.Value), (string)null, X509KeyStorageFlags.MachineKeySet |
+                                                                                              X509KeyStorageFlags.PersistKeySet |
+                                                                                              X509KeyStorageFlags.Exportable);
         }
-
+         
         private void AddApplicationBootstrapping(IServiceCollection services)
         {
             services.AddMediatR(typeof(CreateUserCommand), typeof(CreateUserCommandHandler));

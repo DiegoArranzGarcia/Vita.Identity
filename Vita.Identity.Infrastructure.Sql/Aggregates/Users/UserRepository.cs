@@ -42,10 +42,12 @@ namespace Vita.Identity.Infrastructure.Sql.Aggregates.Users
                                  .FirstOrDefaultAsync(u => u.LoginProviders.Any(elp => elp.Name == loginProvider && elp.ExternalUserId == userId));
         }
 
-        public Task<User> Update(User user)
+        public Task Update(User user)
         {
-            var entry = _context.Users.Update(user);            
-            return Task.FromResult(entry.Entity);
+            _context.Users.Attach(user);
+            _context.Entry(user).State = EntityState.Modified;
+
+            return Task.CompletedTask;
         }
     }
 }

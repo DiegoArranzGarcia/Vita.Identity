@@ -10,7 +10,7 @@ namespace Vita.Identity.Domain.Aggregates.Users
         public string ExternalUserId { get; init; }
         public string Token { get; private set; }
 
-        protected LoginProvider() { }
+        private LoginProvider() { }
 
         public LoginProvider(string name, string externalUserId, string token)
         {

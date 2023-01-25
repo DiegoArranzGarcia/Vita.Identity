@@ -3,7 +3,6 @@ using IdentityServer4;
 using IdentityServer4.Events;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
-using IdentityServer4.Test;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -14,11 +13,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Vita.Identity.Application.Query.Users;
 using Vita.Identity.Domain.Aggregates.Users;
 using Vita.Identity.Domain.ValueObjects;
 using Vita.Identity.Host.Shared;
-using Vita.Identity.Persistance.Sql.Migrations;
 
 namespace IdentityServerHost.Quickstart.UI
 {
@@ -135,7 +132,7 @@ namespace IdentityServerHost.Quickstart.UI
             return _userRepository.UnitOfWork.SaveEntitiesAsync();
         }
 
-        private async Task<(User user, Vita.Identity.Domain.Aggregates.Users.LoginProvider loginProvider, IEnumerable<Claim> claims)> FindUserFromExternalProvider(AuthenticateResult result)
+        private async Task<(User user, LoginProvider loginProvider, IEnumerable<Claim> claims)> FindUserFromExternalProvider(AuthenticateResult result)
         {
             var externalUser = result.Principal;
 
@@ -152,9 +149,9 @@ namespace IdentityServerHost.Quickstart.UI
 
             string provider = result.Properties.Items["scheme"];
             string providerUserId = userIdClaim.Value;
-
             string accessToken = result.Properties.GetTokenValue("access_token");
-            Vita.Identity.Domain.Aggregates.Users.LoginProvider loginProvider = new(provider, providerUserId, accessToken);
+
+            LoginProvider loginProvider = new(provider, providerUserId, accessToken);
 
             // find external user
             var user = await _userRepository.FindByLoginProvider(loginProvider.Name, loginProvider.ExternalUserId);
@@ -162,7 +159,7 @@ namespace IdentityServerHost.Quickstart.UI
             return (user, loginProvider, claims);
         }
 
-        private async Task<User> AutoProvisionUser(Vita.Identity.Domain.Aggregates.Users.LoginProvider loginProvider, IEnumerable<Claim> claims)
+        private async Task<User> AutoProvisionUser(LoginProvider loginProvider, IEnumerable<Claim> claims)
         {
             Claim emailClaim = claims.FirstOrDefault(x => x.Type == ClaimTypes.Email);
             Email email = new(emailClaim.Value);
@@ -174,12 +171,12 @@ namespace IdentityServerHost.Quickstart.UI
                 string givenName = claims.First(x => x.Type == ClaimTypes.GivenName).Value;
                 string familyName = claims.First(x => x.Type == ClaimTypes.Surname).Value;
 
-                user = Vita.Identity.Domain.Aggregates.Users.User.CreateUserWithLoginProvider(email, givenName, familyName, loginProvider);
+                user = Vita.Identity.Domain.Aggregates.Users.User.CreateWithLoginProvider(email, givenName, familyName, loginProvider);
                 await _userRepository.Add(user);
             }
             else
             {
-                Vita.Identity.Domain.Aggregates.Users.LoginProvider currentProvider = user.LoginProviders.FirstOrDefault(x => x.Name == loginProvider.Name);
+                LoginProvider currentProvider = user.LoginProviders.FirstOrDefault(x => x.Name == loginProvider.Name);
 
                 if (currentProvider is null)
                 {
@@ -195,7 +192,7 @@ namespace IdentityServerHost.Quickstart.UI
 
         // if the external login is OIDC-based, there are certain things we need to preserve to make logout work
         // this will be different for WS-Fed, SAML2p or other protocols
-        private void ProcessLoginCallback(AuthenticateResult externalResult, List<Claim> localClaims, AuthenticationProperties localSignInProps)
+        private static void ProcessLoginCallback(AuthenticateResult externalResult, List<Claim> localClaims, AuthenticationProperties localSignInProps)
         {
             // if the external system sent a session id claim, copy it over
             // so we can use it for single sign-out

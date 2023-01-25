@@ -6,6 +6,11 @@
     "appInsights1": {
       "type": "appInsights",
       "connectionId": "APPINSIGHTS_INSTRUMENTATIONKEY"
+    },
+    "secrets2": {
+      "type": "secrets",
+      "connectionId": "VitaKeyVaultUri",
+      "dynamicId": null
     }
   }
 }

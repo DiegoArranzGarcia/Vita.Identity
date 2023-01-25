@@ -1,8 +1,14 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Azure.Extensions.AspNetCore.Configuration.Secrets;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
 using System;
+using System.Runtime.ConstrainedExecution;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Vita.Identity.Host
 {
@@ -30,9 +36,14 @@ namespace Vita.Identity.Host
                     if (ctx.HostingEnvironment.IsDevelopment())
                         config.WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}");
                 })
-                .ConfigureWebHostDefaults(webBuilder =>
+                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); })
+                .ConfigureAppConfiguration((context, config)=>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    Uri keyVaultUri = new(Environment.GetEnvironmentVariable("VitaKeyVaultUri"));
+                    IConfigurationRoot builtConfig = config.Build();
+                    SecretClient secretClient = new(keyVaultUri, new DefaultAzureCredential());
+
+                    config.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());
                 });
         }
     }

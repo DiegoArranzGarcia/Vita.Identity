@@ -4,10 +4,17 @@
       "type": "secrets.user"
     },
     "appInsights1": {
+      "secretStore": "LocalSecretsFile",
       "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/microsoft.insights/components/dev-identity-vita-appservice",
       "type": "appInsights.azure",
-      "connectionId": "APPINSIGHTS_INSTRUMENTATIONKEY",
-      "secretStore": "LocalSecretsFile"
+      "connectionId": "APPINSIGHTS_INSTRUMENTATIONKEY"
+    },
+    "secrets2": {
+      "secretStore": null,
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.KeyVault/vaults/dev-vita-keyvault",
+      "type": "secrets.keyVault",
+      "connectionId": "VitaKeyVaultUri",
+      "dynamicId": null
     }
   }
 }
