@@ -32,8 +32,9 @@ input, textarea, select {
     flex-direction: column;
     max-height: 7em;
     
-    &.login-button {
-        align-items: center;   
+    &.login-button,
+    &.external-providers {
+        align-items: center;
     }
 }
 
@@ -90,8 +91,6 @@ button {
     }
 }
 
-
-
 input[type="checkbox"] {
     border: none;
     background-color: none;
@@ -101,17 +100,6 @@ input[type="checkbox"] {
     border: 1px solid $bg-primary-transparency;
     box-shadow: 0 1px 2px $bg-primary-transparency, inset 0px -15px 10px -12px$bg-primary-transparency;
 }
-
-/*input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active
-textarea:-webkit-autofill,
-textarea:-webkit-autofill:hover,
-textarea:-webkit-autofill:focus,
-select:-webkit-autofill,
-select:-webkit-autofill:hover,
-select:-webkit-autofill:focus*/
-/* Change autocomplete styles in WebKit */
 
 div.login-page {
     display: flex;
@@ -136,18 +124,6 @@ div.login-page {
         height: 90%;
         max-height: 37em;
         background-color: rgba(33, 37, 41, 0.35);
-
-        div.login-background {
-            /*position: absolute;
-        top: 0;
-        height: 100%;
-        width: 100%;
-        opacity: 0.4;
-        background-image: url(/assets/login-background.jpg);
-        background-repeat: no-repeat;
-        background-position: center center;
-        background-size: cover;*/
-        }
 
         form {
             display: flex;
@@ -202,7 +178,7 @@ div.login-page {
 
                 .login-remember {
                     height: 3em;
-                }
+                }               
             }
 
             div.login-footer {
@@ -214,5 +190,17 @@ div.login-page {
                 max-height: 7em;
             }
         }
+    }
+}
+
+div.external-providers {
+
+    button.btn btn-secondary {
+        height: 3em;
+        width: 100%;
+        max-width: 16em;
+        border-radius: 2em;
+        background-color: $bg-primary-transparency;
+        color: $font-primary;
     }
 }

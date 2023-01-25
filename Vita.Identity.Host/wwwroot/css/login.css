@@ -2,10 +2,12 @@
   margin: 0;
   padding: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-  color: #ffffff; }
+  color: #ffffff;
+}
 
 html, body, main {
-  height: 100%; }
+  height: 100%;
+}
 
 div.page-cover {
   width: 100%;
@@ -14,38 +16,43 @@ div.page-cover {
   top: 0;
   left: 0;
   z-index: -1;
-  overflow: hidden; }
-  div.page-cover div.cover {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    background-image: linear-gradient(to right, #1abc9c, #2c3e50); }
-  div.page-cover div.page-mask {
-    background-image: url(/assets/bg-layer.png);
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: cover;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%; }
+  overflow: hidden;
+}
+div.page-cover div.cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background-image: linear-gradient(to right, #1abc9c, #2c3e50);
+}
+div.page-cover div.page-mask {
+  background-image: url(/assets/bg-layer.png);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
 
 @-webkit-keyframes autofill {
   0%, 100% {
     color: white;
-    background: transparent; } }
-
+    background: transparent;
+  }
+}
 input:-internal-autofill-previewed, input:-internal-autofill-selected, input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active, textarea:-internal-autofill-previewed, textarea:-internal-autofill-selected, textarea:-webkit-autofill, textarea:-webkit-autofill:hover, textarea:-webkit-autofill:focus, textarea:-webkit-autofill:active, select:-internal-autofill-previewed, select:-internal-autofill-selected, select:-webkit-autofill, select:-webkit-autofill:hover, select:-webkit-autofill:focus, select:-webkit-autofill:active {
   box-shadow: none;
   color: white !important;
   background-color: transparent !important;
   -webkit-box-shadow: 0 0 0 0px transparent inset !important;
   -webkit-text-fill-color: none !important;
-  transition: transparent 5000s ease-in-out 0s, color 5000s ease-in-out 0s; }
+  transition: transparent 5000s ease-in-out 0s, color 5000s ease-in-out 0s;
+}
 
 .form-group {
   height: 100%;
@@ -54,9 +61,11 @@ input:-internal-autofill-previewed, input:-internal-autofill-selected, input:-we
   align-items: flex-start;
   justify-content: center;
   flex-direction: column;
-  max-height: 7em; }
-  .form-group.login-button {
-    align-items: center; }
+  max-height: 7em;
+}
+.form-group.login-button, .form-group.external-providers {
+  align-items: center;
+}
 
 .input {
   display: inline-flex;
@@ -67,26 +76,31 @@ input:-internal-autofill-previewed, input:-internal-autofill-selected, input:-we
   margin-top: 1em;
   margin-bottom: 2em;
   border-radius: 2em;
-  background-color: rgba(255, 255, 255, 0.25); }
-  .input i {
-    margin-left: 0.5em;
-    color: rgba(255, 255, 255, 0.65);
-    text-align: center;
-    width: 2em;
-    position: absolute; }
-  .input input {
-    background: transparent;
-    margin-left: 3.5em;
-    margin-right: 1em; }
+  background-color: rgba(255, 255, 255, 0.25);
+}
+.input i {
+  margin-left: 0.5em;
+  color: rgba(255, 255, 255, 0.65);
+  text-align: center;
+  width: 2em;
+  position: absolute;
+}
+.input input {
+  background: transparent;
+  margin-left: 3.5em;
+  margin-right: 1em;
+}
 
 input {
   margin: auto;
   width: 100%;
   border: none;
   color: white;
-  background: none; }
-  input:focus {
-    outline: none; }
+  background: none;
+}
+input:focus {
+  outline: none;
+}
 
 button {
   height: 3em;
@@ -96,106 +110,109 @@ button {
   background-color: rgba(26, 188, 156, 0.7);
   color: #ffffff;
   border: none;
-  text-transform: uppercase; }
-  button:focus {
-    outline: none; }
+  text-transform: uppercase;
+}
+button:focus {
+  outline: none;
+}
 
-input[type="checkbox"] {
+input[type=checkbox] {
   border: none;
   background-color: none;
   height: 16px;
   width: 16px;
   background-color: rgba(26, 188, 156, 0.7);
   border: 1px solid rgba(26, 188, 156, 0.7);
-  box-shadow: 0 1px 2px rgba(26, 188, 156, 0.7), inset 0px -15px 10px -12px rgba(26, 188, 156, 0.7); }
+  box-shadow: 0 1px 2px rgba(26, 188, 156, 0.7), inset 0px -15px 10px -12px rgba(26, 188, 156, 0.7);
+}
 
-/*input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active
-textarea:-webkit-autofill,
-textarea:-webkit-autofill:hover,
-textarea:-webkit-autofill:focus,
-select:-webkit-autofill,
-select:-webkit-autofill:hover,
-select:-webkit-autofill:focus*/
-/* Change autocomplete styles in WebKit */
 div.login-page {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   height: 100%;
-  min-height: 32em; }
-  div.login-page div.page-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: center; }
-  div.login-page div.login-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 90%;
-    max-width: 40em;
-    height: 90%;
-    max-height: 37em;
-    background-color: rgba(33, 37, 41, 0.35); }
-    div.login-page div.login-container div.login-background {
-      /*position: absolute;
-        top: 0;
-        height: 100%;
-        width: 100%;
-        opacity: 0.4;
-        background-image: url(/assets/login-background.jpg);
-        background-repeat: no-repeat;
-        background-position: center center;
-        background-size: cover;*/ }
-    div.login-page div.login-container form {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: space-between;
-      width: 80%;
-      max-width: 28em;
-      height: 100%; }
-      div.login-page div.login-container form div.login-tabs {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100%;
-        width: 100%;
-        max-height: 7em;
-        font-weight: bold;
-        color: transparent; }
-        div.login-page div.login-container form div.login-tabs label {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          width: 100%;
-          height: 3em;
-          text-transform: uppercase;
-          color: rgba(255, 255, 255, 0.35); }
-          div.login-page div.login-container form div.login-tabs label.active {
-            color: rgba(255, 255, 255, 0.75);
-            border-bottom: 2px solid rgba(26, 188, 156, 0.7); }
-      div.login-page div.login-container form div.login-form {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        height: 100%;
-        width: 100%; }
-        div.login-page div.login-container form div.login-form label.login-label {
-          text-transform: uppercase;
-          align-items: center;
-          justify-content: center;
-          flex-direction: column;
-          color: rgba(255, 255, 255, 0.35) !important; }
-        div.login-page div.login-container form div.login-form .login-remember {
-          height: 3em; }
-      div.login-page div.login-container form div.login-footer {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
-        width: 100%;
-        max-height: 7em; }
+  min-height: 32em;
+}
+div.login-page div.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+div.login-page div.login-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 90%;
+  max-width: 40em;
+  height: 90%;
+  max-height: 37em;
+  background-color: rgba(33, 37, 41, 0.35);
+}
+div.login-page div.login-container form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 80%;
+  max-width: 28em;
+  height: 100%;
+}
+div.login-page div.login-container form div.login-tabs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  max-height: 7em;
+  font-weight: bold;
+  color: transparent;
+}
+div.login-page div.login-container form div.login-tabs label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 3em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+}
+div.login-page div.login-container form div.login-tabs label.active {
+  color: rgba(255, 255, 255, 0.75);
+  border-bottom: 2px solid rgba(26, 188, 156, 0.7);
+}
+div.login-page div.login-container form div.login-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+div.login-page div.login-container form div.login-form label.login-label {
+  text-transform: uppercase;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: rgba(255, 255, 255, 0.35) !important;
+}
+div.login-page div.login-container form div.login-form .login-remember {
+  height: 3em;
+}
+div.login-page div.login-container form div.login-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  max-height: 7em;
+}
+
+div.external-providers button.btn btn-secondary {
+  height: 3em;
+  width: 100%;
+  max-width: 16em;
+  border-radius: 2em;
+  background-color: rgba(26, 188, 156, 0.7);
+  color: #ffffff;
+}

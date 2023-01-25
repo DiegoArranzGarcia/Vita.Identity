@@ -40,34 +40,23 @@
                         <b>Sign in</b>
                     </button>
                 </div>
-            </div>
 
-            @if (Model.VisibleExternalProviders.Any())
-            {
-                <div class="col-sm-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <h2>External Account</h2>
-                        </div>
-                        <div class="card-body">
-                            <ul class="list-inline">
-                                @foreach (var provider in Model.VisibleExternalProviders)
-                                {
-                                    <li class="list-inline-item">
-                                        <a class="btn btn-secondary"
+                @if (Model.VisibleExternalProviders.Any())
+                {
+                    <div class="form-group external-providers">
+                            @foreach (var provider in Model.VisibleExternalProviders)
+                            {
+                                <button class="btn btn-secondary"
                                    asp-controller="ExternalLogin"
                                    asp-action="Challenge"
                                    asp-route-scheme="@provider.AuthenticationScheme"
-                                   asp-route-returnUrl="@Model.ReturnUrl">
-                                            @provider.DisplayName
-                                        </a>
-                                    </li>
-                                }
-                            </ul>
-                        </div>
+                            asp-route-returnUrl="@Model.ReturnUrl">
+                                <b>Sign in with @provider.DisplayName</b>
+                            </button>
+                            }
                     </div>
-                </div>
-            }
+                }
+            </div>
 
             <div class="login-footer">
 
