@@ -46,7 +46,7 @@ namespace Vita.Identity.Host
 
             services.AddSameSiteCookiePolicy();
 
-            Client[] clients = Configuration.GetSection("IdentityServer:Clients").Get<Client[]>();
+            Client[] clients = IdentityServerConfiguration.GetClients(Configuration).ToArray();
 
             services.AddIdentityServer(options =>
             {
@@ -56,7 +56,7 @@ namespace Vita.Identity.Host
                 options.Events.RaiseSuccessEvents = true;
             }).AddInMemoryApiScopes(ApiScopeConfiguration.GetApiScopes())
               .AddInMemoryIdentityResources(IdentityServerConfiguration.GetIdentityResources())
-              .AddInMemoryClients(IdentityServerConfiguration.GetClients())
+              .AddInMemoryClients(clients)
               .AddProfileService<ProfileService>()
               .AddSigningCredential(GenerateCertFromAsym());
 

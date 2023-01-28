@@ -12,8 +12,7 @@
       "commandName": "IISExpress",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "VitaKeyVaultUri": "https://dev-vita-keyvault.vault.azure.net/",
-        "AZURE_USERNAME": "diego.arranz.garcia@hotmail.com"
+        "VitaKeyVaultUri": "https://dev-vita-keyvault.vault.azure.net/"
       }
     },
     "Vita.Identity.Host": {
@@ -21,8 +20,7 @@
       "launchUrl": "https://localhost:44360",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "VitaKeyVaultUri": "https://dev-vita-keyvault.vault.azure.net/",
-        "AZURE_USERNAME": "diego.arranz.garcia@hotmail.com"
+        "VitaKeyVaultUri": "https://dev-vita-keyvault.vault.azure.net/"
       },
       "hotReloadEnabled": true
     }

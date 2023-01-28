@@ -37,10 +37,9 @@ namespace Vita.Identity.Host
                         config.WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}");
                 })
                 .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); })
-                .ConfigureAppConfiguration((context, config)=>
+                .ConfigureAppConfiguration((_, config) =>
                 {
                     Uri keyVaultUri = new(Environment.GetEnvironmentVariable("VitaKeyVaultUri"));
-                    IConfigurationRoot builtConfig = config.Build();
                     SecretClient secretClient = new(keyVaultUri, new DefaultAzureCredential());
 
                     config.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());
