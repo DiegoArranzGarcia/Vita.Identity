@@ -1,0 +1,28 @@
+{
+  "profiles": {
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "VitaKeyVaultUri": "https://dev-vita-keyvault.vault.azure.net/"
+      }
+    },
+    "Vita.Identity.Host": {
+      "commandName": "Project",
+      "launchUrl": "https://localhost:44360",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "VitaKeyVaultUri": "https://dev-vita-keyvault.vault.azure.net/"
+      },
+      "hotReloadEnabled": true
+    }
+  },
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:24997",
+      "sslPort": 44360
+    }
+  }
+}
