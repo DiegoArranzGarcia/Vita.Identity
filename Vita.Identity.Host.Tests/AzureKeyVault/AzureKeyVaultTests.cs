@@ -6,28 +6,27 @@ using System;
 using System.Security.Cryptography;
 using Xunit;
 
-namespace Vita.Identity.Host.Tests.AzureKeyVault
+namespace Vita.Identity.Host.Tests.AzureKeyVault;
+
+public class AzureKeyVaultTests
 {
-    public class AzureKeyVaultTests
+    [Fact(Skip = "Azure Key Vault Concept Tests")]
+    public void RSAKeyTest()
     {
-        [Fact(Skip = "Azure Key Vault Concept Tests")]
-        public void RSAKeyTest()
-        {
-            var keyClient = new KeyClient(new Uri("{{your keyvault uri}}"), new DefaultAzureCredential());
-            Response<KeyVaultKey> response = keyClient.GetKey("SingInCredentialsKey");
+        var keyClient = new KeyClient(new Uri("{{your keyvault uri}}"), new DefaultAzureCredential());
+        Response<KeyVaultKey> response = keyClient.GetKey("SingInCredentialsKey");
 
-            RSA rsa = response.Value.Key.ToRSA();
+        RSA rsa = response.Value.Key.ToRSA();
 
-            Assert.NotNull(rsa);
-        }
+        Assert.NotNull(rsa);
+    }
 
-        [Fact(Skip = "Azure Key Vault Concept Tests")]
-        public void CertificateTest()
-        {
-            var keyClient = new CertificateClient(new Uri("{{your keyvault uri}}"), new DefaultAzureCredential());
-            Response<KeyVaultCertificateWithPolicy> response = keyClient.GetCertificate("SignInCredentialsCert");
+    [Fact(Skip = "Azure Key Vault Concept Tests")]
+    public void CertificateTest()
+    {
+        var keyClient = new CertificateClient(new Uri("{{your keyvault uri}}"), new DefaultAzureCredential());
+        Response<KeyVaultCertificateWithPolicy> response = keyClient.GetCertificate("SignInCredentialsCert");
 
-            Assert.NotNull(response.Value.Properties.Version);
-        }
+        Assert.NotNull(response.Value.Properties.Version);
     }
 }

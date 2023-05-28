@@ -1,7 +1,6 @@
-﻿namespace Vita.Identity.Infrastructure.Sql.Configuration
+﻿namespace Vita.Identity.Infrastructure.Sql.Configuration;
+
+public interface IConnectionStringProvider
 {
-    public interface IConnectionStringProvider
-    {
-        string ConnectionString { get; }
-    }
+    string ConnectionString { get; }
 }

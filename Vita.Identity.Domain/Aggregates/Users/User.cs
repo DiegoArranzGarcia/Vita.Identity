@@ -1,57 +1,54 @@
 ﻿using Dawn;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Vita.Core.Domain.Repositories;
+using Vita.Core.Domain;
 using Vita.Identity.Domain.ValueObjects;
 
-namespace Vita.Identity.Domain.Aggregates.Users
+namespace Vita.Identity.Domain.Aggregates.Users;
+
+public class User : Entity
 {
-    public class User : Entity
+    public string PasswordHash { get; init; }
+    public Email Email { get; init; }
+    public string GivenName { get; init; }
+    public string FamilyName { get; init; }
+    public string FullName => $"{GivenName} {FamilyName}".Trim();
+    public string UserName => $"{GivenName.ToLower()}.{FamilyName.ToLower()}".Trim();
+
+    private readonly ICollection<LoginProvider> _loginProviders;
+    public IEnumerable<LoginProvider> LoginProviders => _loginProviders;
+
+    public static User CreateWithPassword(Email email, string givenName, string familyName, string passwordHash)
     {
-        public string PasswordHash { get; init; }
-        public Email Email { get; init; }
-        public string GivenName { get; init; }
-        public string FamilyName { get; init; }
-        public string FullName => $"{GivenName} {FamilyName}".Trim();
-        public string UserName => $"{GivenName.ToLower()}.{FamilyName.ToLower()}".Trim();
+        return new User(email, givenName, familyName, passwordHash);
+    }
 
-        private readonly ICollection<LoginProvider> _loginProviders;
-        public IEnumerable<LoginProvider> LoginProviders => _loginProviders;
+    public static User CreateWithLoginProvider(Email email, string givenName, string familyName, LoginProvider loginProvider = null)
+    {
+        return new User(email, givenName, familyName, loginProvider: loginProvider);
+    }
 
-        public static User CreateWithPassword(Email email, string givenName, string familyName, string passwordHash)
-        {
-            return new User(email, givenName, familyName, passwordHash);
-        }
+    private User() { }
 
-        public static User CreateWithLoginProvider(Email email, string givenName, string familyName, LoginProvider loginProvider = null)
-        {
-            return new User(email, givenName, familyName, loginProvider: loginProvider);
-        }
+    private User(Email email, string givenName, string familyName, string passwordHash = null, LoginProvider loginProvider = null)
+    {
+        Id = Guid.NewGuid();
+        Email = email;
+        GivenName = Guard.Argument(givenName, nameof(givenName)).NotNull().NotEmpty();
+        FamilyName = Guard.Argument(familyName, nameof(familyName)).NotNull().NotEmpty();
 
-        private User() { }
+        Guard.NotAllNull(Guard.Argument(passwordHash), Guard.Argument(loginProvider));
 
-        private User(Email email, string givenName, string familyName, string passwordHash = null, LoginProvider loginProvider = null)
-        {
-            Id = Guid.NewGuid();
-            Email = email;
-            GivenName = Guard.Argument(givenName, nameof(givenName)).NotNull().NotEmpty();
-            FamilyName = Guard.Argument(familyName, nameof(familyName)).NotNull().NotEmpty();
+        PasswordHash = passwordHash;
+        _loginProviders = new List<LoginProvider>();
 
-            Guard.NotAllNull(Guard.Argument(passwordHash), Guard.Argument(loginProvider));
+        if (loginProvider != null) _loginProviders.Add(loginProvider);
+    }
 
-            PasswordHash = passwordHash;
-            _loginProviders = new List<LoginProvider>();
+    public void AssociateExternalLoginProvider(LoginProvider externalLoginProvider)
+    {
+        Guard.Argument(externalLoginProvider).NotNull();
 
-            if (loginProvider != null) _loginProviders.Add(loginProvider);
-        }
-
-        public void AssociateExternalLoginProvider(LoginProvider externalLoginProvider)
-        {
-            Guard.Argument(externalLoginProvider).NotNull();
-
-            _loginProviders.Add(externalLoginProvider);
-        }
+        _loginProviders.Add(externalLoginProvider);
     }
 }

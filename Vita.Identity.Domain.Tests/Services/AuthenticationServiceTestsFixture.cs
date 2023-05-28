@@ -6,54 +6,53 @@ using Vita.Identity.Domain.Services.Passwords;
 using Vita.Identity.Domain.Tests.AutoFixture;
 using Vita.Identity.Domain.ValueObjects;
 
-namespace Vita.Identity.Domain.Tests.Services
+namespace Vita.Identity.Domain.Tests.Services;
+
+public static class AuthenticationServiceTestsFixture
 {
-    public static class AuthenticationServiceTestsFixture
+    private readonly static IFixture _fixture = new Fixture().Customize(new EmailCustomization());
+
+    public static Email GenerateEmail() => _fixture.Create<Email>();
+
+    public static AuthenticationService CreateSut(IUserRepository? userRepository = null,
+                                                  IPasswordService? passwordService = null)
     {
-        private readonly static IFixture _fixture = new Fixture().Customize(new EmailCustomization());
+        return new AuthenticationService(userRepository ?? Substitute.For<IUserRepository>(),
+                                         passwordService ?? Substitute.For<IPasswordService>());
+    }
 
-        public static Email GenerateEmail() => _fixture.Create<Email>();
+    public static AuthenticationService CreateAuthenticationServiceForUser(User user, string providedPassword)
+    {
+        var userRepository = CreateUserRepositoryWithUser(user);
+        var passwordRepository = CreatePasswordService(user.PasswordHash, providedPassword);
 
-        public static AuthenticationService CreateSut(IUserRepository? userRepository = null,
-                                                      IPasswordService? passwordService = null)
-        {
-            return new AuthenticationService(userRepository ?? Substitute.For<IUserRepository>(),
-                                             passwordService ?? Substitute.For<IPasswordService>());
-        }
+        return CreateSut(userRepository, passwordRepository);
+    }
 
-        public static AuthenticationService CreateAuthenticationServiceForUser(User user, string providedPassword)
-        {
-            var userRepository = CreateUserRepositoryWithUser(user);
-            var passwordRepository = CreatePasswordService(user.PasswordHash, providedPassword);
+    public static User CreateUser()
+    {
+        return _fixture.Build<User>()
+                       .Without(x => x.Events)
+                       .Create();
+    }
 
-            return CreateSut(userRepository, passwordRepository);
-        }
+    private static IUserRepository CreateUserRepositoryWithUser(User user)
+    {
+        var userRepository = Substitute.For<IUserRepository>();
 
-        public static User CreateUser()
-        {
-            return _fixture.Build<User>()
-                           .Without(x => x.Events)
-                           .Create();
-        }
+        userRepository.FindByEmailAsync(Arg.Is(user.Email))
+                      .Returns(user);
 
-        private static IUserRepository CreateUserRepositoryWithUser(User user)
-        {
-            var userRepository = Substitute.For<IUserRepository>();
+        return userRepository;
+    }
 
-            userRepository.FindByEmailAsync(Arg.Is(user.Email))
-                          .Returns(user);
+    private static IPasswordService CreatePasswordService(string hashsedPassword, string providedPassword)
+    {
+        var passwordService = Substitute.For<IPasswordService>();
 
-            return userRepository;
-        }
+        passwordService.VerifyHashedPassword(Arg.Is(hashsedPassword), Arg.Is(providedPassword))
+                       .Returns(true);
 
-        private static IPasswordService CreatePasswordService(string hashsedPassword, string providedPassword)
-        {
-            var passwordService = Substitute.For<IPasswordService>();
-
-            passwordService.VerifyHashedPassword(Arg.Is(hashsedPassword), Arg.Is(providedPassword))
-                           .Returns(true);
-
-            return passwordService;
-        }
+        return passwordService;
     }
 }

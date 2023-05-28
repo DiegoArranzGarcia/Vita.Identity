@@ -1,7 +1,6 @@
-namespace Vita.Identity.Host.Controllers.Account
+namespace Vita.Identity.Host.Controllers.Account;
+
+public class RedirectViewModel
 {
-    public class RedirectViewModel
-    {
-        public string RedirectUrl { get; set; }
-    }
+    public string RedirectUrl { get; set; }
 }

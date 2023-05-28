@@ -1,11 +1,10 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-namespace Vita.Identity.Domain.Services.Passwords
+namespace Vita.Identity.Domain.Services.Passwords;
+
+public interface IPasswordService
 {
-    public interface IPasswordService
-    {
-        string HashPassword(string password);
-        bool VerifyHashedPassword(string hashedPassword, string providedPassword);
-    }
+    string HashPassword(string password);
+    bool VerifyHashedPassword(string hashedPassword, string providedPassword);
 }

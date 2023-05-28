@@ -7,43 +7,40 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
 using System;
-using System.Runtime.ConstrainedExecution;
-using System.Security.Cryptography.X509Certificates;
 
-namespace Vita.Identity.Host
+namespace Vita.Identity.Host;
+
+public static class Program
 {
-    public static class Program
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
-        {
-            Console.Title = "IdentityServer";
+        Console.Title = "IdentityServer";
 
-            BuildWebHostBuilder(args).Build().Run();
-        }
+        BuildWebHostBuilder(args).Build().Run();
+    }
 
-        public static IHostBuilder BuildWebHostBuilder(string[] args)
-        {
-            return Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder(args)
-                .UseSerilog((ctx, config) =>
-                {
-                    config.MinimumLevel.Debug()
-                        .MinimumLevel.Debug()
-                        .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-                        .MinimumLevel.Override("System", LogEventLevel.Warning)
-                        .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
-                        .Enrich.FromLogContext();
+    public static IHostBuilder BuildWebHostBuilder(string[] args)
+    {
+        return Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder(args)
+            .UseSerilog((ctx, config) =>
+            {
+                config.MinimumLevel.Debug()
+                    .MinimumLevel.Debug()
+                    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+                    .MinimumLevel.Override("System", LogEventLevel.Warning)
+                    .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
+                    .Enrich.FromLogContext();
 
-                    if (ctx.HostingEnvironment.IsDevelopment())
-                        config.WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}");
-                })
-                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); })
-                .ConfigureAppConfiguration((_, config) =>
-                {
-                    Uri keyVaultUri = new(Environment.GetEnvironmentVariable("VitaKeyVaultUri"));
-                    SecretClient secretClient = new(keyVaultUri, new DefaultAzureCredential());
+                if (ctx.HostingEnvironment.IsDevelopment())
+                    config.WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}");
+            })
+            .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); })
+            .ConfigureAppConfiguration((_, config) =>
+            {
+                Uri keyVaultUri = new(Environment.GetEnvironmentVariable("VitaKeyVaultUri"));
+                SecretClient secretClient = new(keyVaultUri, new DefaultAzureCredential());
 
-                    config.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());
-                });
-        }
+                config.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());
+            });
     }
 }

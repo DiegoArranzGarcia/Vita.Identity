@@ -1,30 +1,29 @@
 ﻿using Dawn;
 using System;
-using Vita.Core.Domain.Repositories;
+using Vita.Core.Domain;
 
-namespace Vita.Identity.Domain.Aggregates.Users
+namespace Vita.Identity.Domain.Aggregates.Users;
+
+public class LoginProvider : Entity
 {
-    public class LoginProvider : Entity
+    public string Name { get; init; }
+    public string ExternalUserId { get; init; }
+    public string Token { get; private set; }
+
+    private LoginProvider() { }
+
+    public LoginProvider(string name, string externalUserId, string token)
     {
-        public string Name { get; init; }
-        public string ExternalUserId { get; init; }
-        public string Token { get; private set; }
+        Id = Guid.NewGuid();
+        Name = Guard.Argument(name).NotNull().NotEmpty();
+        ExternalUserId = Guard.Argument(externalUserId).NotNull().NotEmpty();
+        Token = Guard.Argument(token).NotNull().NotEmpty();
+    }
 
-        private LoginProvider() { }
+    public void UpdateAccessToken(string token)
+    {
+        Guard.Argument(token).NotNull().NotEmpty();
 
-        public LoginProvider(string name, string externalUserId, string token)
-        {
-            Id = Guid.NewGuid();
-            Name = Guard.Argument(name).NotNull().NotEmpty();
-            ExternalUserId = Guard.Argument(externalUserId).NotNull().NotEmpty();
-            Token = Guard.Argument(token).NotNull().NotEmpty();
-        }
-
-        public void UpdateAccessToken(string token)
-        {
-            Guard.Argument(token).NotNull().NotEmpty();
-
-            Token = token;
-        }
+        Token = token;
     }
 }

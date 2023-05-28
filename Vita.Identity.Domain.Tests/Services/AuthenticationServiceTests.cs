@@ -3,57 +3,56 @@ using System.Threading.Tasks;
 using Vita.Identity.Domain.ValueObjects;
 using Xunit;
 
-namespace Vita.Identity.Domain.Tests.Services
+namespace Vita.Identity.Domain.Tests.Services;
+
+public class AuthenticationServiceTests
 {
-    public class AuthenticationServiceTests
+    [Fact]
+    public async Task WhenAuthenticatingUser_GivenRightUserAndPasswordHash_ShouldReturnTrue()
     {
-        [Fact]
-        public async Task WhenAuthenticatingUser_GivenRightUserAndPasswordHash_ShouldReturnTrue()
-        {
-            var providedPasssword = new Fixture().Create<string>();
+        var providedPasssword = new Fixture().Create<string>();
 
-            var user = AuthenticationServiceTestsFixture.CreateUser();
+        var user = AuthenticationServiceTestsFixture.CreateUser();
 
-            var authenticationService = AuthenticationServiceTestsFixture.CreateAuthenticationServiceForUser(user, providedPasssword);
+        var authenticationService = AuthenticationServiceTestsFixture.CreateAuthenticationServiceForUser(user, providedPasssword);
 
-            Assert.True(await authenticationService.AuthenticateUser(user.Email, providedPasssword));
-        }
+        Assert.True(await authenticationService.AuthenticateUser(user.Email, providedPasssword));
+    }
 
-        [Fact]
-        public async Task WhenAuthenticatingUser_GivenRightUserButWrongPasswordHash_ShouldReturnFalse()
-        {
-            var providedPasssword = new Fixture().Create<string>();
+    [Fact]
+    public async Task WhenAuthenticatingUser_GivenRightUserButWrongPasswordHash_ShouldReturnFalse()
+    {
+        var providedPasssword = new Fixture().Create<string>();
 
-            var user = AuthenticationServiceTestsFixture.CreateUser();
+        var user = AuthenticationServiceTestsFixture.CreateUser();
 
-            var authenticationService = AuthenticationServiceTestsFixture.CreateAuthenticationServiceForUser(user, providedPasssword);
+        var authenticationService = AuthenticationServiceTestsFixture.CreateAuthenticationServiceForUser(user, providedPasssword);
 
-            Assert.False(await authenticationService.AuthenticateUser(user.Email, "wrong_password"));
-        }
+        Assert.False(await authenticationService.AuthenticateUser(user.Email, "wrong_password"));
+    }
 
-        [Fact]
-        public async Task WhenAuthenticatingUser_GivenOtherUser_ShouldReturnFalse()
-        {
-            var providedPasssword = new Fixture().Create<string>();
+    [Fact]
+    public async Task WhenAuthenticatingUser_GivenOtherUser_ShouldReturnFalse()
+    {
+        var providedPasssword = new Fixture().Create<string>();
 
-            var user = AuthenticationServiceTestsFixture.CreateUser();
-            var otherUser = AuthenticationServiceTestsFixture.CreateUser();
+        var user = AuthenticationServiceTestsFixture.CreateUser();
+        var otherUser = AuthenticationServiceTestsFixture.CreateUser();
 
-            var authenticationService = AuthenticationServiceTestsFixture.CreateAuthenticationServiceForUser(user, providedPasssword);
+        var authenticationService = AuthenticationServiceTestsFixture.CreateAuthenticationServiceForUser(user, providedPasssword);
 
-            Assert.False(await authenticationService.AuthenticateUser(otherUser.Email, providedPasssword));
-        }
+        Assert.False(await authenticationService.AuthenticateUser(otherUser.Email, providedPasssword));
+    }
 
-        [Fact]
-        public async Task WhenAuthenticatingUser_GivenUnexistingEmail_ShouldReturnFalse()
-        {
-            var providedPasssword = new Fixture().Create<string>();
-            var email = new Email("other_user_email@user.test.com");
+    [Fact]
+    public async Task WhenAuthenticatingUser_GivenUnexistingEmail_ShouldReturnFalse()
+    {
+        var providedPasssword = new Fixture().Create<string>();
+        var email = new Email("other_user_email@user.test.com");
 
-            var user = AuthenticationServiceTestsFixture.CreateUser();
-            var authenticationService = AuthenticationServiceTestsFixture.CreateAuthenticationServiceForUser(user, providedPasssword);
+        var user = AuthenticationServiceTestsFixture.CreateUser();
+        var authenticationService = AuthenticationServiceTestsFixture.CreateAuthenticationServiceForUser(user, providedPasssword);
 
-            Assert.False(await authenticationService.AuthenticateUser(email, providedPasssword));
-        }
+        Assert.False(await authenticationService.AuthenticateUser(email, providedPasssword));
     }
 }

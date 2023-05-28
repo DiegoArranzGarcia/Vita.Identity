@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace Vita.Identity.Host.Policies
+namespace Vita.Identity.Host.Policies;
+
+public class IdentityApiRequirement : IAuthorizationRequirement
 {
-    public class IdentityApiRequirement : IAuthorizationRequirement
-    {
-    }
 }

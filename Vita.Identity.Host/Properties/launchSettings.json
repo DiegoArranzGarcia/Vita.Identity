@@ -1,12 +1,4 @@
 {
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:24997",
-      "sslPort": 44360
-    }
-  },
   "profiles": {
     "IIS Express": {
       "commandName": "IISExpress",
@@ -23,6 +15,14 @@
         "VitaKeyVaultUri": "https://dev-vita-keyvault.vault.azure.net/"
       },
       "hotReloadEnabled": true
+    }
+  },
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:24997",
+      "sslPort": 44360
     }
   }
 }

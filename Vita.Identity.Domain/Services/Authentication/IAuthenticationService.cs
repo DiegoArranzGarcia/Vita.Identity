@@ -1,10 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Vita.Identity.Domain.ValueObjects;
 
-namespace Vita.Identity.Domain.Services.Authentication
+namespace Vita.Identity.Domain.Services.Authentication;
+
+public interface IAuthenticationService
 {
-    public interface IAuthenticationService
-    {
-        Task<bool> AuthenticateUser(Email email, string password);
-    }
+    Task<bool> AuthenticateUser(Email email, string password);
 }

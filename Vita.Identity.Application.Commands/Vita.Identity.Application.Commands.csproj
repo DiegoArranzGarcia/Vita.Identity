@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR" Version="11.1.0" />
-    <PackageReference Include="Vita.Core.Infrastructure.AzureServiceBus" Version="0.2.14" />
+    <PackageReference Include="MediatR" Version="12.0.1" />
+    <PackageReference Include="Vita.Core.Infrastructure.AzureServiceBus" Version="0.2.17" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,7 +1,6 @@
-namespace Vita.Identity.Host.Controllers.Account
+namespace Vita.Identity.Host.Controllers.Account;
+
+public class LogoutViewModel : LogoutInputModel
 {
-    public class LogoutViewModel : LogoutInputModel
-    {
-        public bool ShowLogoutPrompt { get; set; } = true;
-    }
+    public bool ShowLogoutPrompt { get; set; } = true;
 }
